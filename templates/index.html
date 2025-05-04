@@ -1,28 +1,184 @@
 <!DOCTYPE html>
-<html>
-<head><title>Sentiment App</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sentiment Analysis App</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #222;
+    }
+
+    .container {
+      background: white;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      padding: 30px 40px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 2rem;
+    }
+
+    textarea {
+      width: 100%;
+      border: 2px solid #66a6ff;
+      border-radius: 8px;
+      padding: 12px 15px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+    textarea:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 8px rgba(59,130,246,0.4);
+    }
+
+    input[type="submit"] {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 35px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    input[type="submit"]:hover,
+    input[type="submit"]:focus {
+      background: #2563eb;
+      outline: none;
+    }
+
+    .sentiment-result {
+      font-size: 1.5rem;
+      padding: 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      display: inline-block;
+      min-width: 220px;
+      user-select: none;
+    }
+    /* Sentiment-specific colors */
+    .sentiment-positive {
+      background-color: #d1fae5;
+      color: #065f46;
+      box-shadow: 0 0 10px #10b981a8;
+    }
+    .sentiment-negative {
+      background-color: #fee2e2;
+      color: #991b1b;
+      box-shadow: 0 0 10px #ef4444a8;
+    }
+    .sentiment-neutral {
+      background-color: #e0e7ff;
+      color: #4338ca;
+      box-shadow: 0 0 10px #6366f1a8;
+    }
+    .sentiment-mixed {
+      background-color: #fef3c7;
+      color: #854d0e;
+      box-shadow: 0 0 10px #fbbf24a8;
+    }
+    .sentiment-unknown {
+      background-color: #f3f4f6;
+      color: #374151;
+      box-shadow: 0 0 10px #9ca3af;
+    }
+
+    /* Emoji styling */
+    .emoji {
+      margin-left: 10px;
+      font-size: 1.8rem;
+      vertical-align: middle;
+    }
+
+    /* Responsive for small devices */
+    @media (max-width: 400px) {
+      .container {
+        padding: 20px 25px;
+      }
+      textarea {
+        min-height: 100px;
+      }
+      input[type="submit"] {
+        width: 100%;
+        padding: 12px;
+      }
+      .sentiment-result {
+        min-width: 180px;
+        font-size: 1.3rem;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
 <body>
-  <form method="post">
-    <textarea name="text" rows="5" cols="50" placeholder="Enter text..."></textarea><br>
-    <input type="submit" value="Analyze Sentiment">
-  </form>
-  <h2>
-
-    <p>
-      Sentiment: {{ sentiment }}
-      {% if sentiment == 'POSITIVE' %}
-        😊
-      {% elif sentiment == 'NEGATIVE' %}
-        😞
-      {% elif sentiment == 'NEUTRAL' %}
-        😐
-      {% elif sentiment == 'MIXED' %}
-        😕
-      {% else %}
-        ❓
-      {% endif %}
-    </p>
-
-  </h2>
+  <div class="container" role="main">
+    <h1>Sentiment Analysis</h1>
+    <form method="post" aria-label="Sentiment analysis form">
+      <textarea name="text" rows="5" cols="50" placeholder="Enter text to analyze sentiment..." aria-required="true" aria-describedby="instructions"></textarea><br />
+      <input type="submit" value="Analyze Sentiment" />
+    </form>
+    <h2 aria-live="polite" aria-atomic="true">
+      <p class="sentiment-result
+        {% if sentiment == 'POSITIVE' %}
+          sentiment-positive
+        {% elif sentiment == 'NEGATIVE' %}
+          sentiment-negative
+        {% elif sentiment == 'NEUTRAL' %}
+          sentiment-neutral
+        {% elif sentiment == 'MIXED' %}
+          sentiment-mixed
+        {% else %}
+          sentiment-unknown
+        {% endif %}
+      ">
+        Sentiment: {{ sentiment }}
+        {% if sentiment == 'POSITIVE' %}
+          <span class="emoji" role="img" aria-label="Positive">😊</span>
+        {% elif sentiment == 'NEGATIVE' %}
+          <span class="emoji" role="img" aria-label="Negative">😞</span>
+        {% elif sentiment == 'NEUTRAL' %}
+          <span class="emoji" role="img" aria-label="Neutral">😐</span>
+        {% elif sentiment == 'MIXED' %}
+          <span class="emoji" role="img" aria-label="Mixed">😕</span>
+        {% else %}
+          <span class="emoji" role="img" aria-label="Unknown">❓</span>
+        {% endif %}
+      </p>
+    </h2>
+  </div>
 </body>
 </html>
+
+
